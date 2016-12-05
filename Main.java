@@ -19,7 +19,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        Connector connector =new Connector("Restaurant","127.0.0.1","57356","root","AssAssin_108");
+        Generator generator =new Generator();
         launch(args);
     }
 }

@@ -62,10 +62,10 @@ public class Connector {
         String query="SELECT ";
         for (String u : items ) {
             query += u;
-            if(u!=items[items.length])
+            if(u!=items[items.length-1])
                 query+=" ,";
         }
-        query+=" FROM "+ table+" WHERE "+condition;
+        query+=" FROM "+ table+" WHERE "+condition+" ;";
         try (Statement statement =connection.createStatement()) {
             return statement.executeQuery(query);
         }
@@ -82,17 +82,17 @@ public class Connector {
         for(Pair u :fields)
         {
             query+=u.getFieldName();
-            if(u!=fields[fields.length])
+            if(u!=fields[fields.length-1])
                 query+=" , ";
         }
         query+=" ) VALUES ( ";
         for(Pair u :fields)
         {
-            query+=u.getValue();
-            if(u!=fields[fields.length])
+            query+="'"+u.getValue()+"'";
+            if(u!=fields[fields.length-1])
                 query+=" , ";
         }
-        query+=" ) ";
+        query+=" ) "+" ;";
         updateStatement(query);
     }
     void update (String table ,String condition ,  Pair ... fields)
@@ -101,10 +101,10 @@ public class Connector {
         for (Pair u : fields)
         {
             query+=u.getFieldName()+" = "+u.getValue();
-            if(u!= fields[fields.length])
+            if(u!= fields[fields.length-1])
                 query+=" , ";
         }
-        query += "WHERE "+condition;
+        query += "WHERE "+condition+" ;";
         updateStatement(query);
     }
     ResultSet dosomething (String query)
