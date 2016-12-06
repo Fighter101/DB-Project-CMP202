@@ -70,7 +70,7 @@ public class Connector {
             return statement.executeQuery(query);
         }
         catch (java.sql.SQLException ex){
-            System.out.println("Error in Query"+query);
+            System.out.println("Error in Query "+query);
             System.out.println("SQL State: "+ex.getSQLState());
             ex.printStackTrace();
         }
@@ -115,7 +115,7 @@ public class Connector {
             }
         }
         catch (java.sql.SQLException ex){
-            System.out.println("Error in Query"+query);
+            System.out.println("Error in Query "+query);
             System.out.println("SQL State: "+ex.getSQLState());
             ex.printStackTrace();
         }

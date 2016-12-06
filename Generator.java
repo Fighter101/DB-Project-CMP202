@@ -6,6 +6,7 @@ package sample;
  */
 import javafx.util.converter.IntegerStringConverter;
 
+import javax.lang.model.element.Name;
 import java.lang.*;
 import java.util.*;
 public class Generator {
@@ -61,7 +62,7 @@ public class Generator {
             Pair name = new Pair("Name" , generateString(30));
             Pair jobTitle = new Pair("JobTitle" , jobTitles[random.nextInt(jobTitles.length)]);
             Pair salary = new Pair("Salary" , generateNumString(5));
-            Pair assetID = new Pair ("AssetID" , (new Integer(random.nextInt(9)+1)).toString() );
+            Pair assetID = new Pair ("AssetID" , (new Integer(random.nextInt(10)+1)).toString() );
             connector.insert("Employees", ID, name, jobTitle , salary , assetID);
         }
         for(int i=0 ; i<1000 ;++i)
@@ -76,11 +77,37 @@ public class Generator {
             Pair jobTitle = new Pair("JobTitle" , jobTitles[random.nextInt(jobTitles.length)]);
             Pair salary = new Pair("Salary" , generateNumString(5));
             Pair supervisor = new Pair ("Supervisor" , superSSN[random.nextInt(superSSN.length)]);
-            Pair assetID = new Pair ("AssetID" , (new Integer(random.nextInt(9)+1)).toString() );
+            Pair assetID = new Pair ("AssetID" , (new Integer(random.nextInt(10)+1)).toString() );
             connector.insert("Employees", ID, name, jobTitle , salary , supervisor, assetID);
         }
-        //////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////Generate  RawMaterials Table////////////////////////////////////////
+        //query will be like INSERT INTO RawMaterials (Name , Cost , AssetID) VALUES (' ',' ',' ');
+        for (int i = 0;i<1000 ;++i)
+        {
+            Pair Name = new Pair("Name",generateString(30));
+            Pair Cost = new Pair( "Cost",Float.toString((random.nextFloat()*100000)+1));
+            Pair AssetID = new Pair("AssetID", Integer.toString(random.nextInt(10) + 1));
+            connector.insert("RawMaterials" , Name , Cost , AssetID);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        ///////////////////////////////Generate  Meals Table/////////////////////////////////////////////////////////
+        //query will be like INSERT INTO Meals (Name , Price) VALUES (' ',' ');
+        for (int i=0 ;i<1000;++i) {
+            Pair Name = new Pair("Name", generateString(30));
+            Pair Price = new Pair("Price", Float.toString((random.nextFloat() * 1000000) + 1));
+            connector.insert("Meals" , Name ,Price);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////Generate Recipes Table/////////////////////////////////////////////
+        /////////////////////query will be like INSERT INTO Recipes (RawMaterialID , MealID , Amount) VALUES (' ' , ' ' , ' ');
+        for(int i=0; i<1000; ++i){
+            Pair rawMaterialID =new Pair("RawMaterialID" , Integer.toString(random.nextInt(1000) + 1));
+            Pair mealID =new Pair("MealID" , Integer.toString(random.nextInt(1000) + 1));
+            Pair amount = new Pair("Amount" , Float.toString(random.nextFloat() * 100 + 1));
+            connector.insert("Recipes" , rawMaterialID , mealID , amount);
 
+        }
     }
 }
