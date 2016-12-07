@@ -3,7 +3,6 @@ package sample;
 /**
  * Created by Hassan on 12/5/2016
  * */
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.lang.*;
 import java.sql.*;
@@ -57,7 +56,7 @@ public class Connector {
                 System.exit(1);
             }
     }
-    ResultSet viewTable (String table ,String condition ,  String ... items)
+    boolean exists (String table , String condition , String ... items)
     {
         String query="SELECT ";
         for (String u : items ) {
@@ -67,14 +66,20 @@ public class Connector {
         }
         query+=" FROM "+ table+" WHERE "+condition+" ;";
         try (Statement statement =connection.createStatement()) {
-            return statement.executeQuery(query);
+            ResultSet resultSet = statement.executeQuery(query);
+            if(!resultSet.first()) {
+                return false;
+            }
+            else{
+                return true;
+            }
         }
         catch (java.sql.SQLException ex){
             System.out.println("Error in Query "+query);
             System.out.println("SQL State: "+ex.getSQLState());
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
     void insert(String table , Pair ... fields)
     {

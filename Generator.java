@@ -4,10 +4,7 @@ package sample;
  * Created by Hassan on 12/5/2016.
  * This class will generate random data and insert it into our DB for test puroses
  */
-import javafx.util.converter.IntegerStringConverter;
 
-import javax.lang.model.element.Name;
-import javax.sql.rowset.spi.SyncFactoryException;
 import java.lang.*;
 import java.util.*;
 public class Generator {
@@ -49,13 +46,13 @@ public class Generator {
     }
 
     Generator() {
-         connector = new Connector("Restaurant", "127.0.0.1", "3306", "root", "AssAssin_108");
-        // query will be like   INSERT INTO Assets (Name , Type , Adress )
-        //generateAssets(10);
-        //generateEmployees(10,1000);
-        //generateMaterials(1000);
-        //generateMeals(1000);
-        genrateRecipes(1000);
+        connector = new Connector("Restaurant", "127.0.0.1", "3306", "root", "AssAssin_108");
+        generateAssets(10);
+        generateEmployees(10,1000);
+        generateMaterials(1000);
+        generateMeals(1000);
+        generateRecipes(1000);
+
 
     }
     private void  generateAssets(int r_numAssets)
@@ -123,21 +120,16 @@ public class Generator {
             connector.insert("RawMaterials" , Name , Cost , AssetID);
         }
     }
-    private void genrateRecipes(int r_numRecipes)
+    private void generateRecipes(int r_numRecipes)
     {
         numRecipes = r_numRecipes;
         for(int i=0; i<1000; ++i) {
             Integer matID = new Integer(0), melID = new Integer(0);
-            try {
                 do {
                     matID = random.nextInt(numRawMaterials) + 1;
                     melID = random.nextInt(numMeals) + 1;
                 }
-                while (connector.viewTable("Recipes", "RawMaterialID = " + matID + " AND MealID = " + melID, "*").first());
-            } catch (java.sql.SQLException ex) {
-                System.out.println(ex.getMessage());
-                System.out.println(ex.getSQLState());
-            }
+                while (connector.exists("Recipes", "RawMaterialID = " + matID + " AND MealID = " + melID, "*"));
             Pair rawMaterialID = new Pair("RawMaterialID", matID.toString());
             Pair mealID = new Pair("MealID", melID.toString());
             Pair amount = new Pair("Amount", Float.toString(random.nextFloat() * 100 + 1));
