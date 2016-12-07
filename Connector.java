@@ -1,13 +1,13 @@
 package sample;
 
-/**
+/*
  * Created by Hassan on 12/5/2016
  * */
 
 import java.lang.*;
 import java.sql.*;
 public class Connector {
-    Connection connection;
+    private Connection connection;
     private void updateStatement (String query)
     {
 
@@ -56,23 +56,13 @@ public class Connector {
                 System.exit(1);
             }
     }
-    boolean exists (String table , String condition , String ... items)
+    boolean exists(String table, String condition)
     {
-        String query="SELECT ";
-        for (String u : items ) {
-            query += u;
-            if(u!=items[items.length-1])
-                query+=" ,";
-        }
+        String query="SELECT * ";
         query+=" FROM "+ table+" WHERE "+condition+" ;";
         try (Statement statement =connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
-            if(!resultSet.first()) {
-                return false;
-            }
-            else{
-                return true;
-            }
+            return resultSet.first();
         }
         catch (java.sql.SQLException ex){
             System.out.println("Error in Query "+query);
@@ -112,7 +102,7 @@ public class Connector {
         query += "WHERE "+condition+" ;";
         updateStatement(query);
     }
-    ResultSet dosomething (String query)
+    ResultSet doSomething (String query)
     {
         try (Statement statement =connection.createStatement()) {
             if( statement.execute(query)) {

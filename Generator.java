@@ -7,16 +7,16 @@ package sample;
 
 import java.lang.*;
 import java.util.*;
+import java.time.*;
 public class Generator {
     private static final char[] symbols;
     private static final char[] numbers;
     private Connector connector;
-    Random random = new Random();
-    String assetTypes [] ={"Branch" , "Warehouse"};
-    String jobTitles[]={"Chef", "Cashier", "Waiter", "OrderDelivery", "IT"};
+    private Random random = new Random();
+    private String assetTypes [] ={"Branch" , "Warehouse"};
+    private String jobTitles[]={"Chef", "Cashier", "Waiter", "OrderDelivery", "IT"};
     private  String [] superSSN;
-    private Integer numAssets = new Integer(0);
-    private Integer numSuper,numEmployees,numMeals,numRawMaterials,numRecipes;
+    private Integer numAssets , numSuper,numEmployees,numMeals,numRawMaterials,numRecipes,numPatches,numClients;
 
     static {
         StringBuilder tmp = new StringBuilder();
@@ -52,8 +52,8 @@ public class Generator {
         generateMaterials(1000);
         generateMeals(1000);
         generateRecipes(1000);
-
-
+        generateClients(1000);
+        generatePatches(10);
     }
     private void  generateAssets(int r_numAssets)
     {
@@ -123,17 +123,47 @@ public class Generator {
     private void generateRecipes(int r_numRecipes)
     {
         numRecipes = r_numRecipes;
-        for(int i=0; i<1000; ++i) {
-            Integer matID = new Integer(0), melID = new Integer(0);
+        for(int i=0; i<numRecipes; ++i) {
+            Integer matID , melID;
                 do {
                     matID = random.nextInt(numRawMaterials) + 1;
                     melID = random.nextInt(numMeals) + 1;
                 }
-                while (connector.exists("Recipes", "RawMaterialID = " + matID + " AND MealID = " + melID, "*"));
+                while (connector.exists("Recipes", "RawMaterialID = " + matID + " AND MealID = " + melID));
             Pair rawMaterialID = new Pair("RawMaterialID", matID.toString());
             Pair mealID = new Pair("MealID", melID.toString());
             Pair amount = new Pair("Amount", Float.toString(random.nextFloat() * 100 + 1));
             connector.insert("Recipes", rawMaterialID, mealID, amount);
         }
         }
+    private void generateClients (int r_Clients)
+    {
+        //query will be like INSERT  INTO Clients (PhoneNo , Name , Password , Address) VALUES (' ' , ' ' , ' ',' ');
+        numClients = r_Clients;
+        for (int i=0; i < numClients ; ++i) {
+            Pair phoneNo = new Pair("PhoneNo", generateNumString(11));
+            Pair name = new Pair("Name", generateString(30));
+            Pair password = new Pair("Password", generateString(20));
+            Pair address = new Pair("Address", generateString(100));
+            connector.insert("Clients" , phoneNo , name , password , address);
+        }
+
+    }
+    private void generatePatches (int r_Patches)
+    {
+        //query will be like INSERT INTO Patches (RawMaterialID , ExpiryDate) VALUES ( ' ' , ' ')
+        LocalDate localDate =  LocalDate.now();
+        numPatches =r_Patches;
+        for (int i=1 ; i<numRawMaterials ; ++i) {
+            for (int j  = 0; j < numPatches; ++j) {
+                Pair rawMaterialID = new Pair("RawMaterialID" , String.valueOf(i));
+                LocalDate expDate ;
+                do {
+                     expDate = localDate.plusMonths(random.nextInt(13)).plusDays(random.nextInt(8));
+                } while (connector.exists("Patches" , "RawMaterialID = '" + i + "' AND ExpiryDate = '"+ expDate.toString()+"'"));
+                Pair expiryDate = new Pair("ExpiryDate", expDate.toString());
+                connector.insert("Patches",rawMaterialID,expiryDate);
+            }
+        }
+    }
 }
