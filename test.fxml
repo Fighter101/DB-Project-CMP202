@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="1156.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="357.0" minWidth="6.0" prefWidth="187.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="827.0" minWidth="10.0" prefWidth="722.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="176.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints maxHeight="171.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="171.0" minHeight="0.0" prefHeight="45.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="491.0" minHeight="10.0" prefHeight="451.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="61.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+         <children>
+            <TabPane prefHeight="31.0" prefWidth="1153.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab fx:id="addOrderTab" text="Add New Order" />
+                <Tab fx:id="editOrderTab" text="Edit Order" />
+              </tabs>
+            </TabPane>
+         </children>
+      </HBox>
+      <VBox prefHeight="449.0" prefWidth="209.0" GridPane.rowIndex="2">
+         <children>
+            <Accordion>
+              <panes>
+                <TitledPane fx:id="delievry" animated="false" text="Orders to deliever">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </TitledPane>
+                <TitledPane fx:id="notification" animated="false" text="Notifications">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </TitledPane>
+              </panes>
+            </Accordion>
+         </children>
+      </VBox>
+      <ScrollPane fx:id="mealsScrollpane" pannable="true" prefHeight="491.0" prefWidth="681.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <content>
+            <VBox fx:id="mealsVBox" fillWidth="true" maxHeight="Infinity" spacing="10.0">
+               <children>
+                  <Label prefHeight="42.0" prefWidth="168.0" text="Meals">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </content></ScrollPane>
+      <VBox prefHeight="212.0" prefWidth="181.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+         <children>
+            <Label prefHeight="32.0" prefWidth="153.0" text="Price">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Label>
+            <TextArea prefHeight="200.0" prefWidth="200.0">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </TextArea>
+            <Button fx:id="createOrderButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="176.0" text="Create Order">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="refreshButton" mnemonicParsing="false" onMousePressed="#handleRefreshButtonPressed" prefHeight="33.0" prefWidth="177.0" text="Refresh">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <MenuBar GridPane.columnSpan="2147483647">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+   <padding>
+      <Insets bottom="25.0" left="25.0" right="25.0" />
+   </padding>
+</GridPane>

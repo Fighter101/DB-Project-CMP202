@@ -4,8 +4,13 @@ package sample;
  * Created by Hassan on 12/5/2016
  * */
 
+import com.sun.xml.internal.ws.api.model.MEP;
+
 import java.lang.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Connector {
     private Connection connection;
     private void updateStatement (String query)
@@ -95,7 +100,7 @@ public class Connector {
         String query = "UPDATE "+table +"SET ";
         for (Pair u : fields)
         {
-            query+=u.getFieldName()+" = "+u.getValue();
+            query+=u.getFieldName()+" = '"+u.getValue()+"'";
             if(u!= fields[fields.length-1])
                 query+=" , ";
         }
@@ -115,6 +120,23 @@ public class Connector {
             ex.printStackTrace();
         }
         return null;
+    }
+    List<Meal> getMeals ()
+    {
+        List<Meal> meals = new ArrayList<Meal>();
+        String query = "Select Name , Description , Price FROM Meals";
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet=statement.executeQuery(query);
+            while (resultSet.next()){
+                meals.add(new Meal(resultSet.getString("Name") , resultSet.getString("Description") , resultSet.getFloat("Price")));
+            }
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println("Error in Query "+query);
+            System.out.println("SQL State: "+ex.getSQLState());
+            ex.printStackTrace();
+        }
+        return meals;
     }
 
 }

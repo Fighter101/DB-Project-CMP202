@@ -45,14 +45,18 @@ public class Generator {
         return new String(buf);
     }
 
+    public Connector getConnector() {
+        return connector;
+    }
+
     Generator() {
         connector = new Connector("Restaurant", "127.0.0.1", "3306", "root", "AssAssin_108");
         generateAssets(10);
-        generateEmployees(10,1000);
-        generateMaterials(1000);
-        generateMeals(1000);
-        generateRecipes(1000);
-        generateClients(1000);
+        generateEmployees(10,10);
+        generateMaterials(10);
+        generateMeals(10);
+        generateRecipes(10);
+        generateClients(10);
         generatePatches(10);
     }
     private void  generateAssets(int r_numAssets)
@@ -106,7 +110,8 @@ public class Generator {
         for (int i=0 ;i<numMeals;++i) {
             Pair Name = new Pair("Name", generateString(30));
             Pair Price = new Pair("Price", Float.toString((random.nextFloat() * 1000000) + 1));
-            connector.insert("Meals", Name, Price);
+            Pair description = new Pair("Description" , generateString(100));
+             connector.insert("Meals", Name, description, Price);
         }
     }
     private void generateMaterials(int r_numMaterials)
