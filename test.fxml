@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="1156.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="1156.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="357.0" minWidth="6.0" prefWidth="187.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="827.0" minWidth="10.0" prefWidth="722.0" />
@@ -70,7 +70,7 @@
          <content>
             <VBox fx:id="mealsVBox" fillWidth="true" maxHeight="Infinity" spacing="10.0">
                <children>
-                  <Label prefHeight="42.0" prefWidth="168.0" text="Meals">
+                  <Label  fx:id = "mealsLabel" prefHeight="42.0" prefWidth="168.0" text="Meals">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -80,7 +80,7 @@
          </content></ScrollPane>
       <VBox prefHeight="212.0" prefWidth="181.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
-            <Label prefHeight="32.0" prefWidth="153.0" text="Price">
+            <Label fx:id="priceLabel" prefHeight="32.0" prefWidth="153.0" text="Price">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font>
