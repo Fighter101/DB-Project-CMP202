@@ -1,5 +1,7 @@
 package sample;
 
+import java.util.Objects;
+
 /**
  * Created by hassan on 12/23/16.
  */
@@ -26,5 +28,15 @@ public class MealPair {
     public MealPair(String mealName, Integer mealAmount) {
         this.mealName = mealName;
         this.mealAmount = mealAmount;
+    }
+    @Override
+    public boolean equals (Object other){
+        if(other == null) return false;
+        if(other == this) return true;
+        if(!(other instanceof MealPair))
+            return false;
+        if(mealName == ((MealPair) other).mealName)
+            return true;
+        else return false;
     }
 }

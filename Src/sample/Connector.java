@@ -170,12 +170,22 @@ public class Connector {
                 statement.setString(2, Meal.getMealName() );
                 statement.setInt(3 , Meal.getMealAmount());
                 statement.execute();
-                System.out.println(Meal.getMealName()+" "+Meal.getMealAmount());
             } catch (java.sql.SQLException ex) {
                 System.out.print("SQL State : " + ex.getSQLState());
                 System.out.print(ex.getMessage());
             }
         }
+    }
+    Integer getMealPrice (String mealName){
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT Price FROM Meals WHERE Name = '"+mealName + "';");
+            resultSet.next();
+            return resultSet.getInt(1);
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println(ex.getMessage());
+        }
+        return null;
     }
 
 }
