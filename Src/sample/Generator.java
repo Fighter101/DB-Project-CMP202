@@ -52,12 +52,12 @@ public class Generator {
     Generator() {
         connector = new Connector("Restaurant", "127.0.0.1", "3306", "root", "AssAssin_108");
         generateAssets(10);
-        generateEmployees(10,10);
+        generateEmployees(2,8);
         generateMaterials(10);
         generateMeals(10);
         generateRecipes(10);
         generateClients(10);
-        generatePatches(10);
+        generatePatches(5);
     }
     private void  generateAssets(int r_numAssets)
     {

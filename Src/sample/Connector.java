@@ -4,6 +4,8 @@ package sample;
  * Created by Hassan on 12/5/2016
  * */
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 import java.io.*;
 import java.lang.*;
 import java.sql.*;
@@ -149,13 +151,11 @@ public class Connector {
         return meals;
     }
     void addOrder(Integer assetID, Order order){
-        try (CallableStatement statement = connection.prepareCall("{CALL add_order(?,?,?)}")){
+        try (CallableStatement statement = connection.prepareCall("{CALL add_order(?,?)}")){
             statement.registerOutParameter(1,Types.INTEGER);
             statement.setInt(2 , assetID);
-            statement.registerOutParameter(3 , Types.INTEGER);
             statement.execute();
             order.setID(statement.getInt(1));
-            order.setRecordID(statement.getInt(3));
         }
         catch (java.sql.SQLException ex){
             System.out.print("SQL State : "+ ex.getSQLState());
@@ -169,6 +169,8 @@ public class Connector {
                 statement.setInt(1, order.getID());
                 statement.setString(2, Meal.getMealName() );
                 statement.setInt(3 , Meal.getMealAmount());
+                statement.execute();
+                System.out.println(Meal.getMealName()+" "+Meal.getMealAmount());
             } catch (java.sql.SQLException ex) {
                 System.out.print("SQL State : " + ex.getSQLState());
                 System.out.print(ex.getMessage());

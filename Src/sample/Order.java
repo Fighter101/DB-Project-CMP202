@@ -67,4 +67,11 @@ public class Order {
     public void addMeal (String mealName , Integer mealAmount){
         Meals.add(new MealPair(mealName , mealAmount));
     }
+
+    public void setMeals(List<MealPair> meals) {
+        Meals = meals;
+    }
+    public void submitMeals (Connector connector){
+        connector.addMealsToOrder(this);
+    }
 }
