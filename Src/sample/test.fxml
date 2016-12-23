@@ -19,22 +19,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="598.0" prefWidth="1156.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="563.0" prefWidth="1152.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="357.0" minWidth="6.0" prefWidth="187.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="827.0" minWidth="10.0" prefWidth="722.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="357.0" minWidth="6.0" prefWidth="223.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="827.0" minWidth="10.0" prefWidth="749.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="176.0" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints maxHeight="171.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="171.0" minHeight="0.0" prefHeight="45.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="491.0" minHeight="10.0" prefHeight="451.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="171.0" minHeight="4.0" prefHeight="24.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="171.0" minHeight="0.0" prefHeight="31.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="508.0" minHeight="10.0" prefHeight="508.0" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="61.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+      <HBox prefHeight="54.0" prefWidth="1155.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
          <children>
-            <TabPane prefHeight="31.0" prefWidth="1153.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefHeight="53.0" prefWidth="1153.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="addOrderTab" text="Add New Order" />
                 <Tab fx:id="editOrderTab" text="Edit Order" />
@@ -42,9 +42,9 @@
             </TabPane>
          </children>
       </HBox>
-      <VBox prefHeight="449.0" prefWidth="209.0" GridPane.rowIndex="2">
+      <VBox prefHeight="508.0" prefWidth="187.0" GridPane.rowIndex="2">
          <children>
-            <Accordion>
+            <Accordion prefHeight="84.0" prefWidth="199.0">
               <panes>
                 <TitledPane fx:id="delievry" animated="false" text="Orders to deliever">
                      <font>
@@ -70,7 +70,7 @@
          <content>
             <VBox fx:id="mealsVBox" fillWidth="true" maxHeight="Infinity" spacing="10.0">
                <children>
-                  <Label  fx:id = "mealsLabel" prefHeight="42.0" prefWidth="168.0" text="Meals">
+                  <Label fx:id="mealsLabel" prefHeight="42.0" prefWidth="168.0" text="Meals">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
@@ -85,12 +85,12 @@
                   <Font name="System Bold" size="30.0" />
                </font>
             </Label>
-            <TextArea prefHeight="200.0" prefWidth="200.0">
+            <TextArea fx:id="PriceTextArea" prefHeight="200.0" prefWidth="200.0">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
             </TextArea>
-            <Button fx:id="createOrderButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="176.0" text="Create Order">
+            <Button fx:id="createOrderButton" mnemonicParsing="false" onMousePressed="#handleCreateOrderButtonPressed" prefHeight="26.0" prefWidth="176.0" text="Create Order">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -102,7 +102,7 @@
             </Button>
          </children>
       </VBox>
-      <MenuBar GridPane.columnSpan="2147483647">
+      <MenuBar prefHeight="18.0" prefWidth="1155.0" GridPane.columnSpan="2147483647">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -122,7 +122,4 @@
         </menus>
       </MenuBar>
    </children>
-   <padding>
-      <Insets bottom="25.0" left="25.0" right="25.0" />
-   </padding>
 </GridPane>

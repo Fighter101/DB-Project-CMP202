@@ -5,7 +5,7 @@ package sample;
  * */
 
 import com.sun.xml.internal.ws.api.model.MEP;
-
+import java.io.*;
 import java.lang.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +13,8 @@ import java.util.List;
 
 public class Connector {
     private Connection connection;
+    private FileWriter out;
+    private PrintWriter writer;
     private void updateStatement (String query)
     {
 
@@ -27,6 +29,13 @@ public class Connector {
     }
     public Connector (String r_dbName,String r_host,String r_port,String userName, String passWord)
     {
+        try{
+            out = new FileWriter("Inserts.sql",true);
+        }
+        catch (java.io.IOException ex){
+            System.out.println(ex.getMessage());
+        }
+        writer = new PrintWriter(out);
         connection = null;
         final  String driverName = "jdbc:mysql://";
         final String connectionURL =driverName+r_host+":"+r_port+"/"+r_dbName+"?&useSSL=false";
@@ -60,6 +69,8 @@ public class Connector {
                 ex.printStackTrace();
                 System.exit(1);
             }
+        writer.close();
+        out.close();
     }
     boolean exists(String table, String condition)
     {
@@ -93,7 +104,9 @@ public class Connector {
                 query+=" , ";
         }
         query+=" ) "+" ;";
+        writer.println(query);
         updateStatement(query);
+
     }
     void update (String table ,String condition ,  Pair ... fields)
     {
@@ -106,6 +119,7 @@ public class Connector {
         }
         query += "WHERE "+condition+" ;";
         updateStatement(query);
+
     }
     ResultSet doSomething (String query)
     {
@@ -137,6 +151,22 @@ public class Connector {
             ex.printStackTrace();
         }
         return meals;
+    }
+    void addOrder (Integer orderID , Integer assetID , Integer recordID){
+        try (CallableStatement statement = connection.prepareCall("{CALL add_order(?,?,?)}")){
+            statement.registerOutParameter(1,Types.INTEGER);
+            statement.setInt(2 , assetID);
+            statement.registerOutParameter(3 , Types.INTEGER);
+            statement.execute();
+            orderID = statement.getInt(1);
+            recordID = statement.getInt(3);
+            System.out.println(orderID);
+            System.out.println(recordID);
+        }
+        catch (java.sql.SQLException ex){
+            System.out.print("SQL State : "+ ex.getSQLState());
+            System.out.print(ex.getMessage());
+        }
     }
 
 }
