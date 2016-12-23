@@ -152,10 +152,10 @@ public class Connector {
     }
     void addOrder(Integer assetID, Order order){
         try (CallableStatement statement = connection.prepareCall("{CALL add_order(?,?)}")){
-            statement.registerOutParameter(1,Types.INTEGER);
-            statement.setInt(2 , assetID);
+            statement.registerOutParameter("order_id",Types.INTEGER);
+            statement.setInt("asset_id" , assetID);
             statement.execute();
-            order.setID(statement.getInt(1));
+            order.setID(statement.getInt("order_id"));
         }
         catch (java.sql.SQLException ex){
             System.out.print("SQL State : "+ ex.getSQLState());

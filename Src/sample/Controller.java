@@ -49,8 +49,8 @@ public class Controller {
                         else {
                             amount.setDisable(true);
                             if(amount.getValue()!= null) {
-                                orderedMeals.remove(new MealPair(mealName, (Integer) amount.getValue()));
-                                PriceTextArea.setText(new Integer(new Integer(PriceTextArea.getText()) - (new Integer((Integer)amount.getValue()) * connector.getMealPrice(mealName))).toString());
+                                orderedMeals.remove(new MealPair(mealName, Integer.valueOf(((String) amount.getValue()))));
+                               PriceTextArea.setText(new Integer(new Integer(PriceTextArea.getText()) - (new Integer((String) amount.getValue()) * connector.getMealPrice(mealName))).toString());
                             }
                         }
                     }
@@ -66,6 +66,11 @@ public class Controller {
                         CheckBox chkbox = (CheckBox) parent.getChildren().get(0);
                         String text = chkbox.getText();
                         String mealName = text.substring(0 , text.indexOf('\n'));
+                        if(oldValue!=null) {
+                            orderedMeals.remove(new MealPair(mealName, Integer.valueOf(oldValue)));
+                            PriceTextArea.setText(new Integer(new Integer(PriceTextArea.getText()) - (new Integer((oldValue)) * connector.getMealPrice(mealName))).toString());
+
+                        }
                         orderedMeals.add(new MealPair(mealName , new Integer(newValue)));
                         PriceTextArea.setText(new Integer (new Integer(PriceTextArea.getText())+(new Integer(newValue)*connector.getMealPrice(mealName))).toString());
                     }

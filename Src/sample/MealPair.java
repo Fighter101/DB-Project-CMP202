@@ -35,7 +35,7 @@ public class MealPair {
         if(other == this) return true;
         if(!(other instanceof MealPair))
             return false;
-        if(mealName == ((MealPair) other).mealName)
+        if(this.mealName.equals(((MealPair) other).mealName))
             return true;
         else return false;
     }

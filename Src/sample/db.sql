@@ -139,7 +139,7 @@ DROP procedure IF EXISTS `new_procedure`;
 
 DELIMITER $$
 USE `Restaurant`$$
-CREATE PROCEDURE `new_procedure` (OUT order_id INT , IN asset_id INT)
+CREATE PROCEDURE `add_order` (OUT order_id INT , IN asset_id INT)
   BEGIN
     DECLARE record_ID INT;
     DECLARE is_found BOOL DEFAULT FALSE;
