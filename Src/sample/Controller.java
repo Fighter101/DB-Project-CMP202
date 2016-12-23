@@ -1,16 +1,18 @@
 package sample;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,6 +22,8 @@ public class Controller {
         private @FXML  Label priceLabel , mealsLabel;
         private  @FXML TextArea PriceTextArea;
         private  List <Meal>  meals = connector.getMeals();
+        private List <MealPair> orderedMeals = new ArrayList<MealPair>();
+        private ObservableList<Integer> options = FXCollections.observableArrayList(1,2,3,4,5);
         @FXML protected  void  refresh()
         {
             mealsVBox.getChildren().clear();
@@ -36,7 +40,11 @@ public class Controller {
                         else priceLabel.setText("U"+meals.indexOf(u));
                     }
                 });
+                ComboBox comboBox = new ComboBox(options);
+                comboBox.setEditable(true);
+
                 mealsVBox.getChildren().add(checkBox);
+                mealsVBox.getChildren().add(comboBox);
 
             }
         }
@@ -45,9 +53,8 @@ public class Controller {
             refresh();
         }
         @FXML protected  void handleCreateOrderButtonPressed (MouseEvent  event){
-            Integer orderID = new Integer(0),recordID = new Integer(0),assetID = new Integer(1);
-            connector.addOrder(orderID,assetID,recordID);
-            PriceTextArea.setText("Generated Order ID = "+orderID.toString() +" its Record ID =  " + recordID.toString());
+            Order order = new Order(1);
+            order.addOrder(connector);
 
         }
 

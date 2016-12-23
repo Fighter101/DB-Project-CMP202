@@ -68,7 +68,7 @@
       </VBox>
       <ScrollPane fx:id="mealsScrollpane" pannable="true" prefHeight="491.0" prefWidth="681.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <content>
-            <VBox fx:id="mealsVBox" fillWidth="true" maxHeight="Infinity" spacing="10.0">
+            <VBox fx:id="mealsVBox" fillWidth="true" maxHeight="Infinity" prefHeight="45.0" prefWidth="313.0" spacing="10.0">
                <children>
                   <Label fx:id="mealsLabel" prefHeight="42.0" prefWidth="168.0" text="Meals">
                      <font>

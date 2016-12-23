@@ -4,7 +4,6 @@ package sample;
  * Created by Hassan on 12/5/2016
  * */
 
-import com.sun.xml.internal.ws.api.model.MEP;
 import java.io.*;
 import java.lang.*;
 import java.sql.*;
@@ -121,19 +120,16 @@ public class Connector {
         updateStatement(query);
 
     }
-    ResultSet doSomething (String query)
+    void doSomething (String query)
     {
         try (Statement statement =connection.createStatement()) {
-            if( statement.execute(query)) {
-                return statement.getResultSet();
-            }
+            statement.execute(query);
         }
         catch (java.sql.SQLException ex){
             System.out.println("Error in Query "+query);
             System.out.println("SQL State: "+ex.getSQLState());
             ex.printStackTrace();
         }
-        return null;
     }
     List<Meal> getMeals ()
     {
@@ -152,20 +148,31 @@ public class Connector {
         }
         return meals;
     }
-    void addOrder (Integer orderID , Integer assetID , Integer recordID){
+    void addOrder(Integer assetID, Order order){
         try (CallableStatement statement = connection.prepareCall("{CALL add_order(?,?,?)}")){
             statement.registerOutParameter(1,Types.INTEGER);
             statement.setInt(2 , assetID);
             statement.registerOutParameter(3 , Types.INTEGER);
             statement.execute();
-            orderID = statement.getInt(1);
-            recordID = statement.getInt(3);
-            System.out.println(orderID);
-            System.out.println(recordID);
+            order.setID(statement.getInt(1));
+            order.setRecordID(statement.getInt(3));
         }
         catch (java.sql.SQLException ex){
             System.out.print("SQL State : "+ ex.getSQLState());
             System.out.print(ex.getMessage());
+        }
+    }
+    void addMealsToOrder (Order order){
+        List<MealPair> Meals = order.getMeals();
+        for (MealPair Meal :Meals) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO OrderComponents (OrderID , MealID , Amount) VALUES (? , (SELECT ID FROM Meals WHERE Name = ?) , ?)")) {
+                statement.setInt(1, order.getID());
+                statement.setString(2, Meal.getMealName() );
+                statement.setInt(3 , Meal.getMealAmount());
+            } catch (java.sql.SQLException ex) {
+                System.out.print("SQL State : " + ex.getSQLState());
+                System.out.print(ex.getMessage());
+            }
         }
     }
 

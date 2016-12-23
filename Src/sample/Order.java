@@ -1,6 +1,7 @@
 package sample;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hassan on 12/9/16.
@@ -16,10 +17,15 @@ public class Order {
     private int assetID;
     private int recordID;
     private Status status;
-    public Order(float tax, int assetID, int recordID) {
-        this.tax = tax;
+    private int ID;
+    private List<MealPair> Meals;
+    public Order(int assetID) {
         this.assetID = assetID;
-        this.recordID = recordID;
+        Meals = new ArrayList<MealPair>();
+    }
+
+    public List<MealPair> getMeals() {
+        return Meals;
     }
 
     public float getTax() {
@@ -45,14 +51,20 @@ public class Order {
     public void setRecordID(int recordID) {
         this.recordID = recordID;
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     public void addOrder (Connector connector)
     {
-        //INSERT VALUES (Status , Tax , AssetID , RecordID) VALUES (' ' , ' ' , ' ' , ' ')
-        if(connector.exists("Records" , "WHERE AssetID = " + String.valueOf(assetID) + "AND Date = " + LocalDate.now().toString())){
-            connector.insert("Records" , new Pair("Date" , LocalDate.now().toString()) , new Pair("AssetID" , String.valueOf(assetID)));
-        }
-        connector.insert("Orders" , new Pair("Status" , status.toString()), new Pair("Tax" , String.valueOf(tax)), new Pair ("AssetID" , String .valueOf(assetID)) , new Pair("RecordID" , String.valueOf(recordID)));
-        //TODO don't forget to update the records
-        //connector.update("Records" , "Where AssetID = " + String.valueOf(assetID) +"AND Date = '" + LocalDate.now().toString()+"'" ,  );
+        connector.addOrder(assetID , this);
+    }
+    public void addMeal (String mealName , Integer mealAmount){
+        Meals.add(new MealPair(mealName , mealAmount));
     }
 }
