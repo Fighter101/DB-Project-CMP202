@@ -135,8 +135,13 @@ CREATE TABLE Delivery
   FOREIGN KEY(EmployeeID) REFERENCES Employees(ID) ON DELETE SET NULL,
   FOREIGN KEY(VehicleMotorNo) REFERENCES Vehicles(MotorNo) ON DELETE SET NULL
 );
-CREATE PROCEDURE `add_order`(OUT order_id INT , IN asset_id INT , OUT record_id INT)
+DROP procedure IF EXISTS `new_procedure`;
+
+DELIMITER $$
+USE `Restaurant`$$
+CREATE PROCEDURE `new_procedure` (OUT order_id INT , IN asset_id INT)
   BEGIN
+    DECLARE record_ID INT;
     DECLARE is_found BOOL DEFAULT FALSE;
     SELECT exists (SELECT * FROM Records where Records.Date = curdate()) INTO is_found;
     IF is_found = 0
@@ -146,4 +151,5 @@ CREATE PROCEDURE `add_order`(OUT order_id INT , IN asset_id INT , OUT record_id 
     SELECT ID FROM Records WHERE Date = CURDATE() INTO record_id;
     INSERT INTO Orders (Status , AssetID , RecordID) VALUES ('Ordered' , asset_id , record_id);
     SET order_id = LAST_INSERT_ID();
-  END
+  END$$
+DELIMITER ;
