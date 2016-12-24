@@ -187,7 +187,7 @@ public class Connector {
         }
         return null;
     }
-    List<DelievryOrder> getDelievryOrders (Integer assetID){
+    List<DelievryOrder> getdelievryorders(Integer assetID){
         List<DelievryOrder> delievryOrders = new ArrayList<>();
         try (Statement statement = connection.createStatement()){
            ResultSet resultSet =  statement.executeQuery("SELECT  Orders.ID , Clients.Address , Clients.PhoneNo , Clients.Name FROM Clients , DeliveryOrders , Orders WHERE Orders.ID = DeliveryOrders.ID AND Orders.Status = 'Cooked' AND DeliveryOrders.ClientPhoneNo = Clients.PhoneNo AND Orders.AssetID = "+assetID.toString()+";");

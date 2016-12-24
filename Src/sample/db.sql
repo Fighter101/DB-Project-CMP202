@@ -46,19 +46,19 @@ CREATE TABLE Orders
 
 CREATE TABLE RawMaterials
 (
-  ID INT PRIMARY KEY AUTO_INCREMENT,
-  Name VARCHAR(30) NOT NULL,
-  Cost FLOAT NOT NULL,
-  AssetID INT,
-  FOREIGN KEY(AssetID) REFERENCES Assets(ID) ON DELETE SET NULL
+  Name VARCHAR(30) PRIMARY KEY
 );
 
 CREATE TABLE Patches
 (
-  RawMaterialID INT,
+  RawMaterialName VARCHAR(30),
   ExpiryDate DATE,
-  PRIMARY KEY(RawMaterialID, ExpiryDate),
-  FOREIGN KEY(RawMaterialID) REFERENCES RawMaterials(ID) ON DELETE CASCADE
+  Amount FLOAT NOT NULL,
+  Cost FLOAT NOT NULL,
+  AssetID INT,
+  PRIMARY KEY(RawMaterialName, ExpiryDate, AssetID),
+  FOREIGN KEY(RawMaterialName) REFERENCES RawMaterials(Name) ON DELETE CASCADE,
+  FOREIGN KEY(AssetID) REFERENCES Assets(ID) ON DELETE CASCADE
 );
 
 CREATE TABLE Meals
@@ -71,11 +71,11 @@ CREATE TABLE Meals
 
 CREATE TABLE Recipes
 (
-  RawMaterialID INT,
+  RawMaterialName VARCHAR(30),
   MealID INT,
   Amount FLOAT NOT NULL,
-  PRIMARY KEY(RawMaterialID, MealID),
-  FOREIGN KEY(RawMaterialID) REFERENCES RawMaterials(ID) ON DELETE CASCADE,
+  PRIMARY KEY(RawMaterialName, MealID),
+  FOREIGN KEY(RawMaterialName) REFERENCES RawMaterials(Name) ON DELETE CASCADE,
   FOREIGN KEY(MealID) REFERENCES Meals(ID) ON DELETE CASCADE
 );
 
@@ -135,10 +135,7 @@ CREATE TABLE Delivery
   FOREIGN KEY(EmployeeID) REFERENCES Employees(ID) ON DELETE SET NULL,
   FOREIGN KEY(VehicleMotorNo) REFERENCES Vehicles(MotorNo) ON DELETE SET NULL
 );
-DROP procedure IF EXISTS `new_procedure`;
-
 DELIMITER $$
-USE `Restaurant`$$
 CREATE PROCEDURE `add_order` (OUT order_id INT , IN asset_id INT)
   BEGIN
     DECLARE record_ID INT;
@@ -151,5 +148,15 @@ CREATE PROCEDURE `add_order` (OUT order_id INT , IN asset_id INT)
     SELECT ID FROM Records WHERE Date = CURDATE() INTO record_id;
     INSERT INTO Orders (Status , AssetID , RecordID) VALUES ('Ordered' , asset_id , record_id);
     SET order_id = LAST_INSERT_ID();
+  END$$
+DELIMITER ;
+
+DELIMITER $$
+USE `Restaurant`$$
+CREATE PROCEDURE `deliever_order` (IN employee_id VARCHAR(30) , IN vechile_license CHAR(7) , IN order_id INT )
+  BEGIN
+
+    INSERT INTO Delivery (DeliveryOrderID , EmployeeID , VehicleMotorNo) VALUES  (order_id ,  employee_id , (SELECT MotorNo FROM Vehicles WHERE LicenceNo = vechile_license));
+    UPDATE Vehicles SET Status = 'Busy' WHERE LicenceNo = vechile_license;
   END$$
 DELIMITER ;

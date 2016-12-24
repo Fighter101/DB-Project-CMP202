@@ -105,7 +105,7 @@ public class Controller {
             }
             List<String> vechiles = connector.getVechiles();
             licenceNumbers.addAll(vechiles);
-            delievryOrders = connector.getDelievryOrders(assetID);
+            delievryOrders = connector.getdelievryorders(assetID);
             for (DelievryOrder delievryOrder : delievryOrders){
                 HBox deliveryOrderHbo = new HBox();
                 deliveryOrderHbo.setSpacing(10);
@@ -127,7 +127,6 @@ public class Controller {
                 });
                 deliveryOrderHbo.getChildren().add(deliever);
                 delievryOrdersVBox.getChildren().add(deliveryOrderHbo);
-
             }
 
         }

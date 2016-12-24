@@ -17,6 +17,7 @@ public class Generator {
     private String jobTitles[]={"Chef", "Cashier", "Waiter", "OrderDelivery", "IT"};
     private  String [] superSSN;
     private Integer numAssets , numSuper,numEmployees,numMeals,numRawMaterials,numRecipes,numPatches,numClients;
+    private List<String> rawMaterials = new ArrayList<>();
 
     static {
         StringBuilder tmp = new StringBuilder();
@@ -120,9 +121,7 @@ public class Generator {
         for (int i = 0;i<numRawMaterials ;++i)
         {
             Pair Name = new Pair("Name",generateString(30));
-            Pair Cost = new Pair( "Cost",Float.toString((random.nextFloat()*100000)+1));
-            Pair AssetID = new Pair("AssetID", Integer.toString(random.nextInt(10) + 1));
-            connector.insert("RawMaterials" , Name , Cost , AssetID);
+            connector.insert("RawMaterials" , Name);
         }
     }
     private void generateRecipes(int r_numRecipes)
@@ -167,6 +166,7 @@ public class Generator {
                      expDate = localDate.plusMonths(random.nextInt(13)).plusDays(random.nextInt(8));
                 } while (connector.exists("Patches" , "RawMaterialID = '" + i + "' AND ExpiryDate = '"+ expDate.toString()+"'"));
                 Pair expiryDate = new Pair("ExpiryDate", expDate.toString());
+
                 connector.insert("Patches",rawMaterialID,expiryDate);
             }
         }
