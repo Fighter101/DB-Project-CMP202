@@ -15,7 +15,15 @@ public class Order {
     }
     private float tax;
     private int assetID;
-    private int recordID;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     private Status status;
     private int ID;
     private List<MealPair> Meals;
@@ -42,14 +50,6 @@ public class Order {
 
     public void setAssetID(int assetID) {
         this.assetID = assetID;
-    }
-
-    public int getRecordID() {
-        return recordID;
-    }
-
-    public void setRecordID(int recordID) {
-        this.recordID = recordID;
     }
 
     public int getID() {

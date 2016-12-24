@@ -187,5 +187,73 @@ public class Connector {
         }
         return null;
     }
+    List<DelievryOrder> getDelievryOrders (Integer assetID){
+        List<DelievryOrder> delievryOrders = new ArrayList<>();
+        try (Statement statement = connection.createStatement()){
+           ResultSet resultSet =  statement.executeQuery("SELECT  Orders.ID , Clients.Address , Clients.PhoneNo , Clients.Name FROM Clients , DeliveryOrders , Orders WHERE Orders.ID = DeliveryOrders.ID AND Orders.Status = 'Cooked' AND DeliveryOrders.ClientPhoneNo = Clients.PhoneNo AND Orders.AssetID = "+assetID.toString()+";");
+            while(resultSet.next()){
+               DelievryOrder delievryOrder = new DelievryOrder(assetID);
+               delievryOrder.setID(resultSet.getInt("ID"));
+               delievryOrder.setStatus(Order.Status.Cooked);
+               delievryOrder.setAddress(resultSet.getString("Address"));
+               delievryOrder.setClientName(resultSet.getString("Name"));
+               delievryOrder.setPhoneNumber(resultSet.getInt("PhoneNo"));
+               delievryOrders.add(delievryOrder);
+            }
+            return delievryOrders;
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println("SQL State : " + ex.getSQLState());
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+    List<Employee> getEmployees (Integer assetID){
+        List<Employee> employees = new ArrayList<>();
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT Name , ID FROM Employees WHERE JobTitle = 'OrderDelivery' AND Supervisor IS NOT null AND AssetID = "+assetID.toString()+";");
+            while (resultSet.next()){
+                Employee employee = new Employee();
+                employee.setID(resultSet.getString("ID"));
+                employee.setName(resultSet.getString("Name"));
+                employees.add(employee);
+            }
+            return employees;
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());
+        }
+        return null;
+    }
+    List<String> getVechiles (){
+        List<String> vechiles = new ArrayList<>();
+        try(Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT LicenceNo FROM Restaurant.Vehicles where Status = 'Available'");
+            while (resultSet.next()){
+                vechiles.add(resultSet.getString("LicenceNo"));
+            }
+            return vechiles;
+        }
+        catch (java.sql.SQLException ex) {
+            System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());
+        }
+        return null;
+    }
+    void deliverOrder(DelievryOrder order , Employee employee , String vechileLicence){
+
+        try(CallableStatement statement = connection.prepareCall("{ Call deliever_order (?,?,?)}")) {
+            statement.setString("employee_id" , employee.getID());
+            statement.setString("vechile_license" , vechileLicence);
+            statement.setInt("order_id" , order.getID());
+            statement.execute();
+
+    }
+    catch (java.sql.SQLException ex){
+        System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());
+    }
+
+    }
+
+
 
 }
