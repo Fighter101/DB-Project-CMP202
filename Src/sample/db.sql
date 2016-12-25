@@ -178,7 +178,9 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
     DECLARE current_patch_cost FLOAT;
     SELECT EXISTS (SELECT * FROM DeliveryOrders WHERE DeliveryOrders.ID = order_id) INTO is_delievry;
     IF is_delievry = 1 THEN
-      UPDATE Vehicles,Delivery SET Vehicles.Status = 'Available' WHERE Delivery.DeliveryOrderID = order_id AND Vehicles.MotorNo = Delivery.VehicleMotorNo;
+      BEGIN
+        UPDATE Vehicles,Delivery SET Vehicles.Status = 'Available' WHERE Delivery.DeliveryOrderID = order_id AND Vehicles.MotorNo = Delivery.VehicleMotorNo;
+      END ;
     END IF;
     WHILE meal_counter < (SELECT COUNT(*) FROM OrderComponents WHERE order_id = OrderComponents.OrderID) DO
       BEGIN
@@ -187,21 +189,24 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
           BEGIN
             SELECT Recipes.RawMaterialName , Recipes.Amount INTO rawmaterial_name , rawmaterial_amount FROM Recipes WHERE MealID = meal_id  LIMIT rawmaterial_counter , 1;
             SET rawmaterial_total_amount = meal_amount * rawmaterial_amount;
-            WHILE rawmaterial_total_amount > 0 AND patch_counter > (SELECT COUNT(*) FROM Patches WHERE Patches.RawMaterialName= rawmaterial_name AND AssetID = asset_ID) DO
-              SELECT Patches.Amount , Patches.ExpiryDate , Patches.Cost INTO current_patch_amount , current_patch_expirydate , current_patch_cost FROM Patches WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.AssetID = AssetID ORDER BY ExpiryDate ASC LIMIT patch_counter , 1;
-              IF rawmaterial_total_amount > current_patch_amount THEN
-                BEGIN
-                  SET order_price = order_price + (current_patch_amount * current_patch_cost);
-                  SET rawmaterial_total_amount = rawmaterial_total_amount -current_patch_amount;
-                  DELETE FROM Patches WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.AssetID = asset_ID AND Patches.ExpiryDate = current_patch_expirydate;
-                END;
-              ELSE
-                BEGIN
-                  SET order_price = order_price + (rawmaterial_total_amount  * current_patch_amount);
-                  UPDATE Patches SET Amount = Amount-rawmaterial_total_amount WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.ExpiryDate = current_patch_expirydate AND Patches.AssetID = asset_ID;
-                END;
-              END IF;
-              SET patch_counter = patch_counter+1;
+            WHILE rawmaterial_total_amount > 0 /*AND patch_counter > (SELECT COUNT(*) FROM Patches WHERE Patches.RawMaterialName= rawmaterial_name AND AssetID = asset_ID)*/ DO
+              BEGIN
+                SELECT Patches.Amount , Patches.ExpiryDate , Patches.Cost INTO current_patch_amount , current_patch_expirydate , current_patch_cost FROM Patches WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.AssetID = AssetID  ORDER BY ExpiryDate ASC LIMIT patch_counter , 1 ;
+                IF rawmaterial_total_amount > current_patch_amount THEN
+                  BEGIN
+                    SET order_price = order_price + (current_patch_amount * current_patch_cost);
+                    SET rawmaterial_total_amount = rawmaterial_total_amount -current_patch_amount;
+                    DELETE FROM Patches WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.AssetID = asset_ID AND Patches.ExpiryDate = current_patch_expirydate;
+                  END;
+                ELSE
+                  BEGIN
+                    SET order_price = order_price + (rawmaterial_total_amount  * current_patch_amount);
+                    UPDATE Patches SET Amount = Amount-rawmaterial_total_amount WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.ExpiryDate = current_patch_expirydate AND Patches.AssetID = asset_ID;
+                    SET rawmaterial_total_amount = 0;
+                  END;
+                END IF;
+                SET patch_counter = patch_counter+1;
+              END ;
             END WHILE;
             SET rawmaterial_counter = rawmaterial_counter+1;
           END;
@@ -209,4 +214,6 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
         SET meal_counter = meal_counter+1;
       END;
     END WHILE;
+    UPDATE  Records SET Profits = (SELECT SUM(Meals.Price) FROM Meals , OrderComponents WHERE  OrderComponents.OrderID = order_id AND Meals.ID = OrderComponents.MealID) WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
+    UPDATE Records SET Expenses = order_price WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
   END
