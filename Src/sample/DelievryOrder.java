@@ -18,15 +18,15 @@ public class DelievryOrder extends Order {
         this.address = address;
     }
 
-    public Integer getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Integer phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    private  Integer phoneNumber;
+    private  String phoneNumber;
 
     public String getClientName() {
         return clientName;

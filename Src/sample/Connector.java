@@ -197,7 +197,7 @@ public class Connector {
                delievryOrder.setStatus(Order.Status.Cooked);
                delievryOrder.setAddress(resultSet.getString("Address"));
                delievryOrder.setClientName(resultSet.getString("Name"));
-               delievryOrder.setPhoneNumber(resultSet.getInt("PhoneNo"));
+               delievryOrder.setPhoneNumber(resultSet.getString("PhoneNo"));
                delievryOrders.add(delievryOrder);
             }
             return delievryOrders;
