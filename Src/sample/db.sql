@@ -159,8 +159,10 @@ CREATE PROCEDURE `deliever_order` (IN employee_id VARCHAR(30) , IN vechile_licen
     INSERT INTO Delivery (DeliveryOrderID , EmployeeID , VehicleMotorNo) VALUES  (order_id ,  employee_id , (SELECT MotorNo FROM Vehicles WHERE LicenceNo = vechile_license));
     UPDATE Vehicles SET Status = 'Busy' WHERE LicenceNo = vechile_license;
   END$$
+
 DELIMITER ;
 
+DELIMITER $$
 CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
   BEGIN
     DECLARE is_delievry BOOLEAN DEFAULT FALSE;
@@ -216,4 +218,5 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
     END WHILE;
     UPDATE  Records SET Profits = (SELECT SUM(Meals.Price) FROM Meals , OrderComponents WHERE  OrderComponents.OrderID = order_id AND Meals.ID = OrderComponents.MealID) WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
     UPDATE Records SET Expenses = order_price WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
-  END
+  END $$
+DELIMITER ;

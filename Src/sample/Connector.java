@@ -253,5 +253,36 @@ public class Connector {
     }
 
     }
+    void CloseOrder (Order order){
+        try(CallableStatement statement = connection.prepareCall("{ Call close_order (?,?)}")){
+            statement.setInt("order_id" , order.getID());
+            statement.setInt("asset_ID" , order.getAssetID());
+            statement.execute();
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());
+        }
+    }
+    List<ClosableOrder> getClosableOrders (Integer assetID){
+        List<ClosableOrder> closableOrders = new ArrayList<>();
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT OrderComponents.OrderID , Meals.Name , OrderComponents.Amount , SUM(OrderComponents.Amount* Meals.Price)  FROM Orders, Meals , OrderComponents WHERE Meals.ID = OrderComponents.MealID AND Orders.ID = OrderComponents.OrderID AND Orders.Status = 'Cooked' AND Orders.AssetID = "+ assetID+";");
+            while (resultSet.next()){
+                ClosableOrder closableOrder = new ClosableOrder(assetID);
+                closableOrder.setID(resultSet.getInt("OrderID"));
+                if(closableOrders.contains(closableOrder)){
+                    closableOrder = closableOrders.get(closableOrders.indexOf(closableOrder));
+                    closableOrders.remove(closableOrders.indexOf(closableOrder));
+                }
+                closableOrder.addMeal(resultSet.getString("Name") , resultSet.getInt("Amount"));
+                closableOrder.setPrice(resultSet.getFloat("SUM(OrderComponents.Amount* Meals.Price)"));
+                closableOrders.add(closableOrder);
+            }
+        }
+        catch (java.sql.SQLException ex){
+            System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());
+        }
+        return null;
+    }
 
 }
