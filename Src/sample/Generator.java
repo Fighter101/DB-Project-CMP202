@@ -120,7 +120,9 @@ public class Generator {
         numRawMaterials = r_numMaterials;
         for (int i = 0;i<numRawMaterials ;++i)
         {
-            Pair Name = new Pair("Name",generateString(30));
+            String meal = generateString(30);
+            Pair Name = new Pair("Name",meal);
+            rawMaterials.add(meal);
             connector.insert("RawMaterials" , Name);
         }
     }
@@ -130,11 +132,11 @@ public class Generator {
         for(int i=0; i<numRecipes; ++i) {
             Integer matID , melID;
                 do {
-                    matID = random.nextInt(numRawMaterials) + 1;
+                    matID = random.nextInt(numRawMaterials);
                     melID = random.nextInt(numMeals) + 1;
                 }
-                while (connector.exists("Recipes", "RawMaterialID = " + matID + " AND MealID = " + melID));
-            Pair rawMaterialID = new Pair("RawMaterialID", matID.toString());
+                while (connector.exists("Recipes", "RawMaterialName = '" + rawMaterials.get(matID) + "' AND MealID = " + melID));
+            Pair rawMaterialID = new Pair("RawMaterialName", rawMaterials.get(matID).toString());
             Pair mealID = new Pair("MealID", melID.toString());
             Pair amount = new Pair("Amount", Float.toString(random.nextFloat() * 100 + 1));
             connector.insert("Recipes", rawMaterialID, mealID, amount);
@@ -153,21 +155,23 @@ public class Generator {
         }
 
     }
-    private void generatePatches (int r_Patches)
-    {
+    private void generatePatches (int r_Patches) {
         //query will be like INSERT INTO Patches (RawMaterialID , ExpiryDate) VALUES ( ' ' , ' ')
         LocalDate localDate =  LocalDate.now();
         numPatches =r_Patches;
         for (int i=1 ; i<numRawMaterials ; ++i) {
             for (int j  = 0; j < numPatches; ++j) {
-                Pair rawMaterialID = new Pair("RawMaterialID" , String.valueOf(i));
+                Pair rawMaterialName = new Pair("RawMaterialName" , rawMaterials.get(i));
                 LocalDate expDate ;
                 do {
                      expDate = localDate.plusMonths(random.nextInt(13)).plusDays(random.nextInt(8));
-                } while (connector.exists("Patches" , "RawMaterialID = '" + i + "' AND ExpiryDate = '"+ expDate.toString()+"'"));
+                } while (connector.exists("Patches" , "RawMaterialName = '" + rawMaterials.get(i) + "' AND ExpiryDate = '"+ expDate.toString()+"'"));
                 Pair expiryDate = new Pair("ExpiryDate", expDate.toString());
+                Pair assetID = new Pair ("AssetID" , (new Integer(random.nextInt(numAssets)+1)).toString() );
+                Pair amount = new Pair("Amount" , String.valueOf(random.nextDouble()*1000+1));
+                Pair cost = new Pair("Cost" , String.valueOf(random.nextInt(100)+1));
 
-                connector.insert("Patches",rawMaterialID,expiryDate);
+                connector.insert("Patches",rawMaterialName,assetID ,amount , cost,expiryDate);
             }
         }
     }
