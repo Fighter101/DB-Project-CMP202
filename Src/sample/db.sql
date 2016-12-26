@@ -219,7 +219,7 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
         SET meal_counter = meal_counter+1;
       END;
     END WHILE;
-    UPDATE  Records SET Profits = (SELECT SUM(Meals.Price) FROM Meals , OrderComponents WHERE  OrderComponents.OrderID = order_id AND Meals.ID = OrderComponents.MealID) WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
+    UPDATE  Records SET Profits = (SELECT SUM(Meals.Price * OrderComponents.Amount) FROM Meals , OrderComponents WHERE  OrderComponents.OrderID = order_id AND Meals.ID = OrderComponents.MealID) WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
     UPDATE Records SET Expenses = order_price WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
     UPDATE Orders SET Status = 'Served' WHERE Orders.ID = order_id;
   END $$
