@@ -26,7 +26,8 @@ public class Controller {
         private ObservableList<String> employeeNames = FXCollections.observableArrayList();
         private ObservableList<String> licenceNumbers = FXCollections.observableArrayList();
         private List<DelievryOrder> delievryOrders;
-        private @FXML  VBox delievryOrdersVBox;
+        private @FXML  VBox deliveryOrdersVBox;
+        private @FXML VBox closableOrdersVBox;
         @FXML protected  void  refresh()
         {
             PriceTextField.setText("0");
@@ -98,7 +99,7 @@ public class Controller {
             order.submitMeals(connector);
         }
         @FXML protected  void handleDelievryRefreshButtonPressed (MouseEvent event){
-
+            deliveryOrdersVBox.getChildren().clear();
             List<Employee> employees = connector.getEmployees(assetID);
             for (Employee employee : employees){
                 employeeNames.add(employee.getName());
@@ -126,8 +127,12 @@ public class Controller {
                     }
                 });
                 deliveryOrderHbo.getChildren().add(deliever);
-                delievryOrdersVBox.getChildren().add(deliveryOrderHbo);
+                deliveryOrdersVBox.getChildren().add(deliveryOrderHbo);
             }
 
+        }
+        @FXML protected void handleClosableOrdersRefreshPressed (MouseEvent event){
+            closableOrdersVBox.getChildren().clear();
+            List<ClosableOrder> closableOrders = connector.getClosableOrders(assetID);
         }
 }

@@ -61,7 +61,7 @@
                      <children>
                         <ScrollPane prefHeight="333.0" prefWidth="596.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <content>
-                              <VBox fx:id="delievryOrdersVBox" maxHeight="Infinity" maxWidth="Infinity" />
+                              <VBox fx:id="deliveryOrdersVBox" maxHeight="Infinity" maxWidth="Infinity" />
                            </content>
                         </ScrollPane>
                         <Button fx:id="delievryRefreshButton" layoutX="520.0" layoutY="336.0" mnemonicParsing="false" onMousePressed="#handleDelievryRefreshButtonPressed" text="Refresh" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="14.0" />

@@ -59,6 +59,7 @@ public class Generator {
         generateRecipes(10);
         generateClients(10);
         generatePatches(5);
+        generateVehicles(30);
     }
     private void  generateAssets(int r_numAssets)
     {
@@ -174,5 +175,16 @@ public class Generator {
                 connector.insert("Patches",rawMaterialName,assetID ,amount , cost,expiryDate);
             }
         }
+    }
+    private void generateVehicles (int r_Vehicles){
+        for (Integer i= 0 ;i<r_Vehicles ;++i) {
+            LocalDate localDate = LocalDate.now();
+            Pair expiryDate = new Pair("LicenceExpiryDate", localDate.plusMonths(random.nextInt(13)).plusDays(random.nextInt(8)).toString());
+            Pair motorNo = new Pair("MotorNo", generateNumString(19));
+            Pair licenceNo = new Pair("LicenceNo", generateNumString(7));
+            Pair status = new Pair("Status", "Available");
+            connector.insert("Vehicles", expiryDate, motorNo, licenceNo, status);
+        }
+
     }
 }
