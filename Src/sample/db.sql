@@ -184,13 +184,16 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
         UPDATE Vehicles,Delivery SET Vehicles.Status = 'Available' WHERE Delivery.DeliveryOrderID = order_id AND Vehicles.MotorNo = Delivery.VehicleMotorNo;
       END ;
     END IF;
+    SET meal_counter = 0;
     WHILE meal_counter < (SELECT COUNT(*) FROM OrderComponents WHERE order_id = OrderComponents.OrderID) DO
       BEGIN
         SELECT OrderComponents.MealID , OrderComponents.Amount INTO meal_id , meal_amount FROM OrderComponents WHERE OrderID = order_id  LIMIT meal_counter , 1;
+        SET rawmaterial_counter = 0;
         WHILE rawmaterial_counter < (SELECT COUNT(*) FROM Recipes WHERE Recipes.MealID = meal_id) DO
           BEGIN
             SELECT Recipes.RawMaterialName , Recipes.Amount INTO rawmaterial_name , rawmaterial_amount FROM Recipes WHERE MealID = meal_id  LIMIT rawmaterial_counter , 1;
             SET rawmaterial_total_amount = meal_amount * rawmaterial_amount;
+            SET patch_counter = 0;
             WHILE rawmaterial_total_amount > 0 /*AND patch_counter > (SELECT COUNT(*) FROM Patches WHERE Patches.RawMaterialName= rawmaterial_name AND AssetID = asset_ID)*/ DO
               BEGIN
                 SELECT Patches.Amount , Patches.ExpiryDate , Patches.Cost INTO current_patch_amount , current_patch_expirydate , current_patch_cost FROM Patches WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.AssetID = AssetID  ORDER BY ExpiryDate ASC LIMIT patch_counter , 1 ;
@@ -202,7 +205,7 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
                   END;
                 ELSE
                   BEGIN
-                    SET order_price = order_price + (rawmaterial_total_amount  * current_patch_amount);
+                    SET order_price = order_price + (rawmaterial_total_amount  * current_patch_cost);
                     UPDATE Patches SET Amount = Amount-rawmaterial_total_amount WHERE Patches.RawMaterialName = rawmaterial_name AND Patches.ExpiryDate = current_patch_expirydate AND Patches.AssetID = asset_ID;
                     SET rawmaterial_total_amount = 0;
                   END;
@@ -218,5 +221,6 @@ CREATE PROCEDURE `close_order`(IN order_id INT , IN asset_ID INT)
     END WHILE;
     UPDATE  Records SET Profits = (SELECT SUM(Meals.Price) FROM Meals , OrderComponents WHERE  OrderComponents.OrderID = order_id AND Meals.ID = OrderComponents.MealID) WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
     UPDATE Records SET Expenses = order_price WHERE Records.Date = CURDATE() AND Records.AssetID = asset_ID;
+    UPDATE Orders SET Status = 'Served' WHERE Orders.ID = order_id;
   END $$
 DELIMITER ;
