@@ -4,8 +4,6 @@ package sample;
  * Created by Hassan on 12/5/2016
  * */
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
 import java.io.*;
 import java.lang.*;
 import java.sql.*;
@@ -253,7 +251,7 @@ public class Connector {
     }
 
     }
-    void CloseOrder (Order order){
+    void closeOrder(Order order){
         try(CallableStatement statement = connection.prepareCall("{ Call close_order (?,?)}")){
             statement.setInt("order_id" , order.getID());
             statement.setInt("asset_ID" , order.getAssetID());
@@ -266,7 +264,7 @@ public class Connector {
     List<ClosableOrder> getClosableOrders (Integer assetID){
         List<ClosableOrder> closableOrders = new ArrayList<>();
         try (Statement statement = connection.createStatement()){
-            ResultSet resultSet = statement.executeQuery("SELECT OrderComponents.OrderID , Meals.Name , OrderComponents.Amount , SUM(OrderComponents.Amount* Meals.Price)  FROM Orders, Meals , OrderComponents WHERE Meals.ID = OrderComponents.MealID AND Orders.ID = OrderComponents.OrderID AND Orders.Status = 'Cooked' AND Orders.AssetID = "+ assetID+";");
+            ResultSet resultSet = statement.executeQuery("SELECT SUM(OrderComponents.Amount* Meals.Price), OrderComponents.OrderID , Meals.Name , OrderComponents.Amount   FROM Orders, Meals , OrderComponents WHERE Meals.ID = OrderComponents.MealID AND Orders.ID = OrderComponents.OrderID AND Orders.Status = 'Cooked' AND Orders.AssetID = "+ assetID+" GROUP BY OrderComponents.OrderID , OrderComponents.MealID ;");
             while (resultSet.next()){
                 ClosableOrder closableOrder = new ClosableOrder(assetID);
                 closableOrder.setID(resultSet.getInt("OrderID"));
@@ -275,9 +273,10 @@ public class Connector {
                     closableOrders.remove(closableOrders.indexOf(closableOrder));
                 }
                 closableOrder.addMeal(resultSet.getString("Name") , resultSet.getInt("Amount"));
-                closableOrder.setPrice(resultSet.getFloat("SUM(OrderComponents.Amount* Meals.Price)"));
+                closableOrder.setPrice(closableOrder.getPrice()+resultSet.getFloat("SUM(OrderComponents.Amount* Meals.Price)"));
                 closableOrders.add(closableOrder);
             }
+            return closableOrders;
         }
         catch (java.sql.SQLException ex){
             System.out.println("SQL State :" + ex.getSQLState() +"\n"+ex.getMessage());

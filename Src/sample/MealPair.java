@@ -1,7 +1,5 @@
 package sample;
 
-import java.util.Objects;
-
 /**
  * Created by hassan on 12/23/16.
  */

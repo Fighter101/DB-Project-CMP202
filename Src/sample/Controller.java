@@ -131,8 +131,36 @@ public class Controller {
             }
 
         }
-        @FXML protected void handleClosableOrdersRefreshPressed (MouseEvent event){
+        void refreshClosableOrders()
+        {
             closableOrdersVBox.getChildren().clear();
             List<ClosableOrder> closableOrders = connector.getClosableOrders(assetID);
+            for (ClosableOrder closableOrder : closableOrders){
+                HBox orderHbox = new HBox ();
+                orderHbox.setSpacing(10);
+                Label orderID = new Label("ID: "+closableOrder.getID());
+                orderHbox.getChildren().add(orderID);
+                VBox meals = new VBox();
+                List<MealPair> mealPairs = closableOrder.getMeals();
+                for (MealPair mealPair :mealPairs){
+                    Label mealLabel = new Label ("Meal Name : "+mealPair.getMealName()+"\t"+ "Meal Amount : "+ mealPair.getMealAmount().toString());
+                    meals.getChildren().add(mealLabel);
+                }
+                orderHbox.getChildren().add(meals);
+                Label price = new Label(closableOrder.getPrice().toString());
+                orderHbox.getChildren().add(price);
+                Button checkOut = new Button ("Check Out");
+                checkOut.setOnMousePressed(MouseEvent->{
+                    connector.closeOrder(closableOrder);
+                    refreshClosableOrders();
+                });
+                orderHbox.getChildren().add(checkOut);
+                closableOrdersVBox.getChildren().add(orderHbox);
+            }
+
+        }
+        @FXML protected void handleClosableOrdersRefreshPressed (MouseEvent event){
+            refreshClosableOrders();
+
         }
 }

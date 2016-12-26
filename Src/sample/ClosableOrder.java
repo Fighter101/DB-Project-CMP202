@@ -8,6 +8,7 @@ public class ClosableOrder extends Order {
 
     public ClosableOrder(int assetID) {
         super(assetID);
+        Price = new Float(0);
     }
     private Float Price;
 
